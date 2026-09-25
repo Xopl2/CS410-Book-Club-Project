@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Login</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Enforce Content Security Policy (not implemented for now)
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self';
+                   img-src 'self';"> -->
+</head>
+<body>
+
+    <h1>Sign Up</h1>
+    <form id="signupForm">
+        <label for="signupUsername">Username:</label>
+        <br>
+        <input type="text" id="signupUsername" name="signupUsername">
+        <br>
+        <label for="signupPasswordFirst">Password:</label>
+        <br>
+        <input type="password" id="signupPasswordFirst" name="signupPasswordFirst">
+        <br>
+        <label for="signupPasswordConfirm">Confirm Password:</label>
+        <br>
+        <input type="password" id="signupPasswordConfirm" name="signupPasswordConfirm">
+        <br>
+        <input id="signupSubmit" type="submit" value="Sign Up">
+        <input id="signupSwitchToLogin" type="button" value="Already Registered?">
+    </form>
+
+
+    <!-- External JavaScript file here -->
+    <script src="signupScript.js"></script>
+</body>
+</html>

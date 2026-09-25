@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Login</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Enforce Content Security Policy (not implemented for now)
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self';
+                   img-src 'self';"> -->
+</head>
+<body>
+
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <br>
+        <input type="text" id="loginUsername" name="loginUsername">
+        <br>
+        <label for="loginPassword">Password:</label>
+        <br>
+        <input type="password" id="loginPassword" name="loginPassword">
+        <br>
+        <input id="loginSubmit" type="submit" value="Log In">
+        <input id="loginSwitchToSignup" type="button" value="Not Registered?">
+    </form>
+
+
+    <!-- External JavaScript file here -->
+    <script src="loginScript.js"></script>
+</body>
+</html>

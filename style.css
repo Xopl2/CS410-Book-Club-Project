@@ -1,0 +1,189 @@
+/*
+    As many elements as possible should have an ID, or a class if that doesn't make sense
+    If it has one of those things, make sure it is represented here so we know how to access  
+*/
+
+h1 {
+    text-align: center;
+    font-family: Arial, Verdana, sans-serif;
+}
+
+/*Login Page Elements*/
+
+#loginForm {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: medium;
+    text-align: center;
+    border-style: double;
+    border-width: 10px;
+    border-color: blue;
+    border-radius: 13px;
+    width: 50%;
+    height: 20%;
+    margin: auto;
+}
+
+#loginUsername {
+    font: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+#loginPassword {
+    font: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+#loginSubmit {
+    border-radius: 4px;
+}
+
+#loginSwitchToSignup {
+    border-radius: 4px;
+}
+
+/*Signup Page Elements*/
+
+#signupForm {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: medium;
+    text-align: center;
+    border-style: double;
+    border-width: 10px;
+    border-color: green;
+    border-radius: 13px;
+    width: 50%;
+    height: 20%;
+    margin: auto;
+}
+
+#signupUsername {
+    font: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+#signupPasswordFirst {
+    font: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+#signupPasswordConfirm {
+    font: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+#signupSubmit {
+    border-radius: 4px;
+}
+
+#signupSwitchToLogin {
+    border-radius: 4px;
+}
+
+/*Forum Page Elements*/
+
+#navBar {
+    background-color: darkgray;
+    text-align: right;
+}
+
+#navSignup {
+    border-radius: 4px;
+}
+
+#navSignout {
+    border-radius: 4px;
+}
+
+#navLogin {
+    border-radius: 4px;
+}
+
+.flexContainer {
+    display: flex; 
+    gap: 16px;
+    height: 90%;
+    overflow-x: auto;     
+}
+
+#bookPanel {
+    flex: 1;
+}
+
+#bookCover {
+    width: 200px;        
+    height: 300px;       
+    object-fit: cover;
+}
+
+#bookInfo {
+    background-color: gray;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    text-align: center;
+}
+
+#bookName {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    font-weight: bold;
+}
+
+#authorName {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    font-weight: bold;
+}
+
+#commentsPanel {
+    height: 20%;
+    overflow-y: auto;
+}
+
+.comment {
+    background-color: bisque;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    border: solid;
+    border-width: 2px;
+    border-radius: 5px;
+    border-color: darkgrey;
+}
+
+.commentAuthor {
+    font-family: Arial, Verdana, sans-serif;
+}
+
+.commentTimestamp {
+    font-family: Arial, Verdana, sans-serif;
+}
+
+.commentText {
+    font-family: Arial, Verdana, sans-serif;
+}
+
+
+#writeCommentPanel {
+    display: flex;
+}
+
+#writeCommentBox {
+    background-color: white;
+}
+
+#sendCommentButton {
+    font-family: 'Courier New', Courier, monospace
+}
+
+#modPanel {
+    flex: 1;
+}
+
+#usersPanel {
+    height: 80%;
+    overflow-y: auto;
+}

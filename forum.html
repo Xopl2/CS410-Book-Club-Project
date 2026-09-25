@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Comment Forum</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+
+    <nav id="navBar">
+        <input type="button" id="navLogin" name="navLogin" value="Log In">
+        <input type="button" id="navSignup" name="navSignup" value="Sign Up">
+        <input type="button" id="navSignout" name="navSignout" value="Sign Out">
+    </nav>
+
+    <div class="flexContainer"> <!--This just makes it so book and mod panels are side by side-->
+    
+        <div id="bookPanel">
+
+            <div id="bookInfo">
+                <img id="bookCover" src="https://upload.wikimedia.org/wikipedia/en/8/84/GrisCoverImage.jpg" alt="A girl with colored hair">
+                <br>
+                Book Name: <span id="bookName">Test Book</span>
+                <br>
+                Author: <span id="authorName">Jearbert Spinch</span>
+            </div>
+
+            <div id="commentsPanel">
+                <div class="comment">
+                    <span class="commentAuthor">Jeremy Spinch</span> <span class="commentTimestamp">3s ago</span>
+                    <br>
+                    <span class="commentText" >This is an example comment</span>
+                </div>
+            </div>
+
+            <div id="writeCommentPanel">
+                <textarea name="writeCommentBox" id="writeCommentBox"></textarea>
+                <button name="sendCommentButton" id="sendCommentButton">➢</button>
+            </div>
+
+        </div>
+
+        <div id="modPanel">
+            <div id="usersPanel">
+                <input type="button" class="selectUserButton" value="Example User">
+            </div>
+            <br>
+            <input type="button" id="startTurn" value="Start Turn">
+            <input type="button" id="endTurn" value="End Turn">
+        </div>
+
+    </div>
+
+    <script src="forumScript.js"></script>
+  </body>
+</html>
