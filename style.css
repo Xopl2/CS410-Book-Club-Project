@@ -3,6 +3,12 @@
     If it has one of those things, make sure it is represented here so we know how to access  
 */
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 h1 {
     text-align: center;
     font-family: Arial, Verdana, sans-serif;
@@ -42,6 +48,7 @@ h1 {
 #loginSwitchToSignup {
     border-radius: 4px;
 }
+
 #loginSwitchToForum {
     border-radius: 4px;
 }
@@ -96,6 +103,7 @@ h1 {
 #navBar {
     background-color: darkgray;
     text-align: right;
+    height: 3dvh;
 }
 
 #navSignup {
@@ -113,18 +121,17 @@ h1 {
 .flexContainer {
     display: flex; 
     gap: 16px;
-    height: 90%;
-    overflow-x: auto;     
+    box-sizing: border-box;
+    height: full;
+    min-height: 96dvh;
 }
 
 #bookPanel {
     flex: 1;
-}
-
-#bookCover {
-    width: 200px;        
-    height: 300px;       
-    object-fit: cover;
+    border-style: groove;
+    height: full;
+    border-bottom-right-radius:  8px;
+    border-bottom-left-radius:  8px;
 }
 
 #bookInfo {
@@ -132,6 +139,23 @@ h1 {
     font-family: Arial, Verdana, sans-serif;
     font-size: small;
     text-align: center;
+    align-items: center;
+    height: 40%;
+    display: flex;
+    padding: 0px;
+}
+
+#bookCover {
+    flex: 1;
+    max-height: 85%;
+    width: auto;
+    object-fit: contain;
+}
+
+#bookText {
+    flex: 1;
+    align-items: center;
+    color: white;
 }
 
 #bookName {
@@ -146,51 +170,154 @@ h1 {
     font-weight: bold;
 }
 
+#modName {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    font-weight: bold;
+    color: yellowgreen;
+}
+
+#currentSpeaker {
+    font-family: Arial, Verdana, sans-serif;
+    font-size: small;
+    font-weight: bold;
+    color: blue;
+}
+
 #commentsPanel {
-    height: 20%;
+    height: 40%;
     overflow-y: auto;
 }
 
 .comment {
     background-color: bisque;
     font-family: Arial, Verdana, sans-serif;
-    font-size: small;
+    font-size: medium;
     border: solid;
     border-width: 2px;
     border-radius: 5px;
+    padding: 4px;
     border-color: darkgrey;
+    height: auto;
+}
+
+.commentInfo {
+    display: flex;
+    padding: 4px;
+    color: #48494B;
 }
 
 .commentAuthor {
+    flex: 1;
     font-family: Arial, Verdana, sans-serif;
 }
 
 .commentTimestamp {
+    padding: 4px;
+    align-self: right;
     font-family: Arial, Verdana, sans-serif;
 }
 
 .commentText {
+    padding: 4px;
     font-family: Arial, Verdana, sans-serif;
 }
 
-
 #writeCommentPanel {
     display: flex;
+    height: 20%;
+    border-radius: 8px;
 }
 
 #writeCommentBox {
+    flex: 2;
     background-color: white;
+    width: 70%;
+    height: auto;
+    border-radius: 3px;
 }
 
 #sendCommentButton {
-    font-family: 'Courier New', Courier, monospace
+    flex: 1;
+    background-color: #8AB800;
+    border-style: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 500%;
+    color: white;
+    width: 30%;
+}
+
+#sendCommentButton:hover {
+    background-color: #77DD77;
 }
 
 #modPanel {
     flex: 1;
+    border-style: hidden;
+    border-radius: 8px;
+    gap: 0px;
+    padding: 0px;
+    height: full;
+    overflow: hidden;
+    align-items: center;
 }
 
 #usersPanel {
     height: 80%;
+    border-style: groove;
     overflow-y: auto;
+    border-radius: 8px;
+    gap: 0px;
+    padding: 0px;
+}
+
+.selectUserButton {
+    box-sizing: border-box;
+    width: 100%;
+    height: 10%;
+    gap: 0px;
+    padding: 0px;
+    border-style: hidden;
+    background-color: #F2F3F4;
+}
+
+.selectUserButton:hover {
+    background-color: lightgray;
+}
+
+.selectUserButton:focus {
+    background-color: #B9BBB6;
+}
+
+#turnButtons {
+    display: flex;
+    align-items: center;
+    height: 20%;
+    gap: 4px;
+    border-radius: 8px;
+}
+
+#startTurn {
+    flex: 1;
+    height: 100%;
+    width: auto;
+    border-style: hidden;
+    border-radius: 8px;
+}
+
+#endTurn {
+    flex: 1;
+    height: 100%;
+    background-color: red;
+    border-style: hidden;
+    border-radius: 8px;
+    width: auto;
+}
+
+#endTurn:hover {
+    color: white;
+}
+
+#endTurn:active {
+    background-color: #CA3433;
 }

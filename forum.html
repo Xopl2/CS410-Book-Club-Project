@@ -22,15 +22,22 @@
             <div id="bookInfo">
                 <img id="bookCover" src="https://upload.wikimedia.org/wikipedia/en/8/84/GrisCoverImage.jpg" alt="A girl with colored hair">
                 <br>
-                Book Name: <span id="bookName">Test Book</span>
-                <br>
-                Author: <span id="authorName">Jearbert Spinch</span>
+                <span id="bookText">
+                    Book Name: <span id="bookName" name="bookName">Test Book</span>
+                    <br>
+                    Author: <span id="authorName" name="authorName">Jearbert Spinch</span>
+                    <br>
+                    Moderator: <span id="modName" name="modName">Boscar</span>
+                    <br>
+                    Current Speaker: <span id="currentSpeaker" name="currentSpeaker">Collin</span>
+                </span>
             </div>
 
             <div id="commentsPanel">
                 <div class="comment">
-                    <span class="commentAuthor">Jeremy Spinch</span> <span class="commentTimestamp">3s ago</span>
-                    <br>
+                    <div class="commentInfo">
+                        <span class="commentAuthor">Jeremy Spinch</span> <span class="commentTimestamp">3s ago</span>
+                    </div>
                     <span class="commentText" >This is an example comment</span>
                 </div>
             </div>
@@ -47,8 +54,10 @@
                 <input type="button" class="selectUserButton" value="Example User">
             </div>
             <br>
-            <input type="button" id="startTurn" value="Start Turn">
-            <input type="button" id="endTurn" value="End Turn">
+            <div id="turnButtons">
+                <input type="button" id="startTurn" value="Start Turn">
+                <input type="button" id="endTurn" value="End Turn">
+            </div>
         </div>
 
     </div>
