@@ -1,0 +1,23 @@
+{
+  "currentUser": {
+    "id": 1,
+    "username": "Jearbert Spinch",
+    "role": "moderator"
+  },
+  "book": {
+    "title": "Test Book",
+    "author": "Jearbert Spinch",
+    "coverUrl": "https://upload.wikimedia.org/wikipedia/en/8/84/GrisCoverImage.jpg"
+  },
+  "modName": "Boscar",
+  "currentSpeaker": null,
+  "users": [
+    { "id": 1, "username": "Jearbert Spinch", "role": "moderator" },
+    { "id": 2, "username": "Dean Smith", "role": "registered" },
+    { "id": 3, "username": "Boscar Watkins", "role": "registered" }
+  ],
+  "comments": [
+    { "id": 1, "userId": 1, "username": "Jearbert Spinch", "text": "This is an example comment" },
+    { "id": 2, "userId": 2, "username": "Dean Smith", "text": "I really liked the pacing in chapter 3." }
+  ]
+}
