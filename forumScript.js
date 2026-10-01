@@ -155,6 +155,14 @@ document.getElementById("usersPanel").addEventListener("click", pickUser); //use
 document.getElementById("startTurn").addEventListener("click", startTurn); //start turn button gives selected user the turn
 document.getElementById("endTurn").addEventListener("click", endTurn); //end turn button clears the current speaker
 
+//allow pressing Enter in the comment box to post the comment (Shift+Enter still makes a new line)
+document.getElementById("writeCommentBox").addEventListener("keydown", function(event) {
+    if(event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault(); //stop Enter from adding a newline
+        sendComment();
+    }
+});
+
 //user pressed the sign out button, clear the username cookie and navigate to the forum page
 signoutButton.addEventListener("click", function() {
     document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; //clear the username cookie

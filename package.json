@@ -1,0 +1,25 @@
+{
+  "name": "cs410-book-club-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "forumScript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xopl2/CS410-Book-Club-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Xopl2/CS410-Book-Club-Project/issues"
+  },
+  "homepage": "https://github.com/Xopl2/CS410-Book-Club-Project#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
+}
