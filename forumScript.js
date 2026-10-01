@@ -1,5 +1,6 @@
 const signupButton = document.getElementById("navSignup");
 const loginButton = document.getElementById("navLogin");
+const signoutButton = document.getElementById("navSignout");
 
 signupButton.addEventListener("click", function() {
     window.open("signup.html", "_self");
@@ -153,3 +154,35 @@ document.getElementById("sendCommentButton").addEventListener("click", sendComme
 document.getElementById("usersPanel").addEventListener("click", pickUser); //user buttons update selectedUserId
 document.getElementById("startTurn").addEventListener("click", startTurn); //start turn button gives selected user the turn
 document.getElementById("endTurn").addEventListener("click", endTurn); //end turn button clears the current speaker
+
+//user pressed the sign out button, clear the username cookie and navigate to the forum page
+signoutButton.addEventListener("click", function() {
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; //clear the username cookie
+    window.location.href = "forum.html";
+});
+
+function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
+
+//check if the user is logged in by checking the username cookie
+const loggedInUsername = getCookie("username");
+console.log("Username:", loggedInUsername);
+
+if (loggedInUsername !== null) { //user is logged in
+    document.getElementById("navLogin").style.display = "none"; //hide the login and signup buttons and display the signout button
+    document.getElementById("navSignup").style.display = "none";
+    console.log("Logged in as: " + loggedInUsername);
+    console.log("Username cookie: " + document.cookie);
+}
+else {  //user is not logged in
+    document.getElementById("navSignout").style.display = "none"; //hide the signout button and display the login and signup buttons
+    console.log("Not logged in");
+}
