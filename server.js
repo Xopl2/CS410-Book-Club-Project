@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const { MongoClient } = require("mongodb");
 
@@ -11,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 
 const mongoClient = new MongoClient(MONGO_URI);
 let usersCollection; //set once we connect to MongoDB (see startServer at the bottom)
+let sessionsCollection; //logged in sessions, also set in stateServer
+const SESSION_DAYS = 7; //how long a login lasts before the user has to log in again
 
 //encode/hash a password
 async function encodePassword(plainTextPassword) {
@@ -266,6 +269,14 @@ async function startServer() {
     usersCollection = mongoClient.db(DB_NAME).collection("users");
     //make the database reject duplicate usernames
     await usersCollection.createIndex({ username: 1 }, { unique: true });
+
+    //sessions collection: one document per logged in broweser
+    sessionsCollection = mongoClient.db(DB_NAME).collection("sessions");
+    //MongoDB automatically deletes a session once it expiresAt time has passed
+    await sessionsCollection.createIndex({ expiresAt:1 }, { expireAfterSeconds: 0});
+    //each session id must be unique, and this also makes looking one up fast
+    await sessionsCollection.createIndex({ sessionId: 1 }, { unique: true });
+
     console.log("Connected to MongoDB at " + MONGO_URI + " (database: " + DB_NAME + ")");
 
     server.listen(PORT, () => {
