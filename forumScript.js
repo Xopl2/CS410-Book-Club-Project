@@ -172,7 +172,7 @@ document.getElementById("writeCommentBox").addEventListener("keydown", function(
 signoutButton.addEventListener("click", function() {
     fetch("/logout", {method: "POST"})
     .then(function() {
-        window.location.href = "forum.html"; // go back to login page
+        window.location.href = "forum.html"; // reload the forum as a guest
     })
 });
 
