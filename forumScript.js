@@ -103,12 +103,17 @@ function sendComment() { //add whatever was typed as a new comment
         return;
     }
 
+    if(currentUser === null) {
+        alert("Please log in to post a comment.");
+        return;
+    }
+
     let newComment = { //build the new comment
         id: nextCommentId,
-        userId: mockData.currentUser.id,
-        username: mockData.currentUser.username,
+        username: currentUser.username, //logged in user from server session
         text: text
     };
+
     nextCommentId = nextCommentId + 1; //bump id so next comment gets a new one
 
     mockData.comments.push(newComment); //add new comment to data
@@ -165,32 +170,34 @@ document.getElementById("writeCommentBox").addEventListener("keydown", function(
 
 //user pressed the sign out button, clear the username cookie and navigate to the forum page
 signoutButton.addEventListener("click", function() {
-    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; //clear the username cookie
-    window.location.href = "forum.html";
+    fetch("/logout", {method: "POST"})
+    .then(function() {
+        window.location.href = "forum.html"; // go back to login page
+    })
 });
 
-function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-        const [key, value] = cookie.split("=");
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-    return null;
+let currentUser = null; // the logged in user or null for guests
+
+//ask the server who is logged in, then show thr appropriate nav buttons
+function loadCurrentUser() {
+    fetch("/me")
+        .then(response => response.json())
+        .then(user => {
+            if (user.username !== null) { // user is logged in
+                currentUser = user;
+                document.getElementById("navLogin").style.display = "none"; // hide login and signup buttons and display logout button
+                document.getElementById("navSignup").style.display = "none";
+                console.log("Logged in as: " + currentUser.username + " (" + currentUser.role + ")");
+            }
+            else { //user is not logged in
+                currentUser = null;
+                document.getElementById("navSignout").style.display = "none"; // hide logout button
+                console.log("Not logged in");
+            }
+        })
+        .catch(error => {
+            console.error("Could not check login:", error);
+        });
 }
 
-//check if the user is logged in by checking the username cookie
-const loggedInUsername = getCookie("username");
-console.log("Username:", loggedInUsername);
-
-if (loggedInUsername !== null) { //user is logged in
-    document.getElementById("navLogin").style.display = "none"; //hide the login and signup buttons and display the signout button
-    document.getElementById("navSignup").style.display = "none";
-    console.log("Logged in as: " + loggedInUsername);
-    console.log("Username cookie: " + document.cookie);
-}
-else {  //user is not logged in
-    document.getElementById("navSignout").style.display = "none"; //hide the signout button and display the login and signup buttons
-    console.log("Not logged in");
-}
+loadCurrentUser();

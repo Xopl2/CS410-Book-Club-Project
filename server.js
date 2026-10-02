@@ -289,9 +289,7 @@ const server = http.createServer((req, res) => {
                     res.writeHead(200, {
                         "Set-Cookie": [
                             //the real login: a random session ID the pages JS cant read or change
-                            `session=${sessionId}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`,
-                            //temporary: the forum still reads this until we remove it
-                            `username=${encodeURIComponent(data.username)}; Path=/; Max-Age=${maxAge}`
+                            `session=${sessionId}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`
                         ],
                         "Content-Type": "text/plain"
                     });
@@ -334,8 +332,7 @@ const server = http.createServer((req, res) => {
                 res.writeHead(200, {
                     "Set-Cookie": [
                         //Max-Age=0 to delete the cookie
-                        "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0",
-                        "username=; Path=/; Max-Age=0" //temporary will remove later
+                        "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
                     ],
                     "Content-Type": "text/plain"
                 });
