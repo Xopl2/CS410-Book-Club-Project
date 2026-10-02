@@ -19,7 +19,7 @@ loginForum.addEventListener("click", function(event) {
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
     //send the username and password to the server
-    fetch("http://127.0.0.1:3000/login", {
+    fetch("/login", {
         method: "POST",
         credentials: "include", //include credentials (cookies) in the request
         headers: {

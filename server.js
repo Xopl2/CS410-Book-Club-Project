@@ -1,6 +1,16 @@
 const http = require("http");
 const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcryptjs");
+const { MongoClient } = require("mongodb");
+
+//MongoDB connection settings (can be changed with environment variables)
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
+const DB_NAME = process.env.DB_NAME || "bookclub";
+const PORT = process.env.PORT || 3000;
+
+const mongoClient = new MongoClient(MONGO_URI);
+let usersCollection; //set once we connect to MongoDB (see startServer at the bottom)
 
 //encode/hash a password
 async function encodePassword(plainTextPassword) {
@@ -15,82 +25,77 @@ async function encodePassword(plainTextPassword) {
 
 
 //helper function to check if a username is available
-function nameAvailable(username) {
-    //return a promise that resolves to true if the username is available, false if it is not
-    return new Promise((resolve, reject) => {
-        fs.readFile("users.txt", "utf8", (err, fileData) => { //read file on server side
-            if (err) { //if there is an error reading the file, reject the promise
-                reject(err);
-                return;
-            }
-
-            const users = fileData.split("\n");
-            for (let user of users) { //loop through each user in the file
-                user = user.trim();
-                if (user === "") { //skip empty lines
-                    continue;
-                }
-
-                const parts = user.split(",");
-                if (parts[0] === username) { //username already exists 
-                    resolve(false);
-                    return;
-                }
-            }
-            resolve(true); //username is available
-        });
-    });
+async function nameAvailable(username) {
+    //look for a user with this username in the database
+    const existingUser = await usersCollection.findOne({ username: username });
+    return existingUser === null; //available if no user was found
 }
-//helper function to check if a username is available
-function loginUser(username, password) {
-    //return a promise that resolves to true if the username and password are correct, false if they are not
-    return new Promise((resolve, reject) => {
-        fs.readFile("users.txt", "utf8",async (err, fileData) => { //read file on server side
-            if (err) { //if there is an error reading the file, reject the promise
-                reject(err);
-                return;
-            }
-
-            const users = fileData.split("\n");
-            for (let user of users) { //loop through each user in the file
-                user = user.trim();
-                if (user === "") { //skip empty lines
-                    continue;
-                }
-
-                const parts = user.split(",");
-
-                if (parts[0] === username) { //username found, check password
-                    if (await bcrypt.compare(password, parts[1])) { //compare the password with the hashed password
-                        resolve(true); //passwords match, login successful
-                        return;
-                    } else { //incorrect password
-                        resolve(false); 
-                        return;
-                    }
-                }
-            }
-            resolve(false); //username not found
-        });
-    });
+//helper function to check if a username and password are correct
+async function loginUser(username, password) {
+    //look up the user in the database
+    const user = await usersCollection.findOne({ username: username });
+    if (user === null) { //username not found
+        return false;
+    }
+    //compare the password with the hashed password stored in the database
+    return await bcrypt.compare(password, user.password);
 }
 
 
 //function to add a new user
-function addUser(username, hashedPassword) {
-    return new Promise((resolve, reject) => { //return a promise that resolves when the user is added to the file
-        //add the username and hashed password to the end of the users.txt file
-        fs.appendFile(
-            "users.txt",
-            username + "," + hashedPassword + "\n",
-            err => { 
-                if (err) { //if there is an error writing to the file, reject the promise
-                    reject(err);
-                    return;
-                }
-                resolve(); //user added successfully
-            }
-        );
+async function addUser(username, hashedPassword) {
+    //save the username and hashed password as a new document in the users collection
+    await usersCollection.insertOne({
+        username: username,
+        password: hashedPassword,
+        role: "registered",
+        createdAt: new Date()
+    });
+}
+
+
+//--------------------------
+//serve the website files (html, css, js, images) from this folder
+const FILE_TYPES = {
+    ".html": "text/html",
+    ".css": "text/css",
+    ".js": "text/javascript",
+    ".json": "application/json",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".svg": "image/svg+xml",
+    ".ico": "image/x-icon"
+};
+//files that should never be sent to the browser
+const PRIVATE_FILES = ["server.js", "importUsers.js", "package.json", "package-lock.json", "users.txt"];
+
+function serveFile(req, res) {
+    let urlPath = decodeURIComponent(req.url.split("?")[0]); //remove any ?query from the url
+    if (urlPath === "/") {
+        urlPath = "/index.html";
+    }
+
+    const fileName = path.basename(urlPath);
+    const fileType = FILE_TYPES[path.extname(fileName).toLowerCase()];
+    const filePath = path.join(__dirname, urlPath);
+
+    //only send known file types, stay inside the project folder, and skip private files
+    if (!fileType || !filePath.startsWith(__dirname + path.sep) || PRIVATE_FILES.includes(fileName)
+        || urlPath.includes("node_modules") || urlPath.includes("/.")) {
+        res.writeHead(404);
+        res.end("Not found");
+        return;
+    }
+
+    fs.readFile(filePath, (err, fileData) => {
+        if (err) {
+            res.writeHead(404);
+            res.end("Not found");
+            return;
+        }
+        res.writeHead(200, { "Content-Type": fileType });
+        res.end(fileData);
     });
 }
 
@@ -166,7 +171,16 @@ const server = http.createServer((req, res) => {
                 console.log("Password hash:", hashedPassword);
 
                 //call the addUser function to add the user to the file
-                await addUser(username, hashedPassword);
+                try {
+                    await addUser(username, hashedPassword);
+                } catch (error) {
+                    if (error.code === 11000) { //MongoDB duplicate key error, username was just taken
+                        res.writeHead(409);
+                        res.end("Username already exists");
+                        return;
+                    }
+                    throw error;
+                }
 
                 console.log("User successfully added!"); //user added successfully, return a 200 status code
                 res.writeHead(200);
@@ -233,6 +247,12 @@ const server = http.createServer((req, res) => {
 
 
 //--------------------------
+    //any other GET request is for a website file (forum.html, style.css, ...)
+    else if (req.method === "GET") {
+        serveFile(req, res);
+    }
+
+//--------------------------
     //unknown URL or method, return 404
     else {
         res.writeHead(404);
@@ -240,7 +260,21 @@ const server = http.createServer((req, res) => {
     }
 });
 
-//start the server and listen on port 3000
-server.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+//connect to MongoDB, then start the server and listen on port 3000
+async function startServer() {
+    await mongoClient.connect();
+    usersCollection = mongoClient.db(DB_NAME).collection("users");
+    //make the database reject duplicate usernames
+    await usersCollection.createIndex({ username: 1 }, { unique: true });
+    console.log("Connected to MongoDB at " + MONGO_URI + " (database: " + DB_NAME + ")");
+
+    server.listen(PORT, () => {
+        console.log("Server running at http://localhost:" + PORT);
+    });
+}
+
+startServer().catch(error => {
+    console.error("Could not start the server. Is MongoDB running?");
+    console.error(error);
+    process.exit(1);
 });

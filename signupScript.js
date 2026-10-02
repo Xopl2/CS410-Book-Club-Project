@@ -29,7 +29,7 @@ signupButton.addEventListener("click", function(event) {
 //helper function to send the username and password to the server
 function addUser(guestName, guestPassword) {
     //send the username and password to the server to the locaton /signup
-    fetch("http://127.0.0.1:3000/signup", { 
+    fetch("/signup", { 
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -53,7 +53,7 @@ function addUser(guestName, guestPassword) {
         if (response.ok) {  //account creation successful
             console.log("Account created!");
             // console.log("ALERT CLOSED");
-            window.open("http://127.0.0.1:5500/login.html", "_self");
+            window.open("login.html", "_self");
             alert("Account created successfully! You can now log in.");    
             return;
         } else {    //account creation failed

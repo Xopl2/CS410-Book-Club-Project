@@ -2,7 +2,7 @@
   "name": "cs410-book-club-project",
   "version": "1.0.0",
   "description": "",
-  "main": "forumScript.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Xopl2/CS410-Book-Club-Project#readme",
   "dependencies": {
-    "bcryptjs": "^3.0.3"
+    "bcryptjs": "^3.0.3",
+    "mongodb": "^6.21.0"
   }
 }
