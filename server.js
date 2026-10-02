@@ -56,6 +56,19 @@ async function addUser(username, hashedPassword) {
     });
 }
 
+//create a session for a user and return its random ID
+async function createSession(username) {
+    // 32 random bytes written as hex chars, which is not possible to guess
+    const sessionID = crypto.randomBytes(32).toString("hex");
+    await sessionsCollection.insertOne({
+        sessionID: sessionID,
+        username: username,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000) // 7 days from not in milliseconds
+    });
+    return sessionID;
+}
+
 
 //--------------------------
 //serve the website files (html, css, js, images) from this folder
@@ -232,8 +245,17 @@ const server = http.createServer((req, res) => {
                         return;
                     }
 
-                    res.writeHead(200, { //set the username cookie and return a 200 status code (login successful)
-                        "Set-Cookie": `username=${encodeURIComponent(data.username)}; Path=/`, //sends back a cookie with the username to the client
+                    //login sucessful, start a session for this user
+                    const sessionId = await createSession(data.username);
+                    const maxAge = SESSION_DAYS * 24 * 60 * 60; // cookie lifetime in seconds
+
+                    res.writeHead(200, {
+                        "Set-Cookie": [
+                            //the real login: a random session ID the pages JS cant read or change
+                            `session=${sessionId}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`,
+                            //temporary: the forum still reads this until we remove it
+                            `username=${encodeURIComponent(data.username)}; Path=/; Max-Age=${maxAge}`
+                        ],
                         "Content-Type": "text/plain"
                     });
 
