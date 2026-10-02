@@ -69,6 +69,43 @@ async function createSession(username) {
     return sessionId;
 }
 
+//read one cookie value out of the request's cookie header
+//the browser sends all cookies in one line
+function getCookie(req, name) {
+    const cookieHeader = req.headers.cookie || ""; // empty if browser doesnt send any cookies
+    for (let cookie of cookieHeader.split(";")) { // split into "name = value" pieces
+        const parts = cookie.trim().split("=");
+        if(parts[0] === name) {
+            return decodeURIComponent(parts.slice(1).join("=")); //everything after the first "="
+        }
+    }
+    return null; // cookie not found
+}
+
+//find the logged in user for this request, or null if not logged in
+async function getSessionUser(req) {
+    const sessionId = getCookie(req, "session");
+    if (!sessionId) { // no session cookie, so a guest
+        return null;
+    }
+    // find the session, but only if it exists and is not expired
+    const session = await sessionsCollection.findOne({ sessionId: sessionId, expiresAt: { $gt: new Date() } });
+    if (session === null) { // unknown or expired session
+        return null;
+    }
+    const user = await usersCollection.findOne({ username: session.username });
+    if (user === null) { // account was deleted
+        return null;
+    }
+    return { username: user.username, role: user.role }; // never send the hashed password 
+}
+
+//send a JSON response
+function sendJSON(res, status, data) {
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(data));
+}
+
 
 //--------------------------
 //serve the website files (html, css, js, images) from this folder
@@ -270,6 +307,23 @@ const server = http.createServer((req, res) => {
             return; //end of login request handling
         }
 
+//--------------------------
+    //who is logged in? the forum page calls this when it loads
+    else if(req.url === "/me" && req.method === "GET") {
+        getSessionUser(req)
+            .then(user => {
+                if (user === null) {
+                    sendJSON(res, 200, { username: null, role: null}); //guest
+                } else {
+                    sendJSON(res, 200, user);
+                }
+            })
+            .catch(error => {
+                console.error("Session error:", error);
+                sendJSON(res, 500, { error: "Server error"});
+            });
+        return;
+    }
 
 //--------------------------
     //any other GET request is for a website file (forum.html, style.css, ...)
