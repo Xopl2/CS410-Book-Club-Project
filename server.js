@@ -66,7 +66,7 @@ async function createSession(username) {
         createdAt: new Date(),
         expiresAt: new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000) // 7 days from not in milliseconds
     });
-    return sessionID;
+    return sessionId;
 }
 
 
