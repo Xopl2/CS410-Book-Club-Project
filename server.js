@@ -326,10 +326,36 @@ const server = http.createServer((req, res) => {
     }
 
 //--------------------------
+    // log out: delete the session from the database and clear the cookies
+    else if(req.url === "/logout" && req.method === "POST") {
+        const sessionId = getCookie(req, "session");
+        sessionsCollection.deleteOne({ sessionId: sessionId })
+            .then(() => {
+                res.writeHead(200, {
+                    "Set-Cookie": [
+                        //Max-Age=0 to delete the cookie
+                        "session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0",
+                        "username=; Path=/; Max-Age=0" //temporary will remove later
+                    ],
+                    "Content-Type": "text/plain"
+                });
+                res.end("Logged out");
+            })
+            .catch(error => {
+                console.error("Logout error:", error);
+                res.writeHead(500);
+                res.end("Server error");
+            });
+        return;
+    }
+
+//--------------------------
     //any other GET request is for a website file (forum.html, style.css, ...)
     else if (req.method === "GET") {
         serveFile(req, res);
     }
+
+
 
 //--------------------------
     //unknown URL or method, return 404
