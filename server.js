@@ -59,9 +59,9 @@ async function addUser(username, hashedPassword) {
 //create a session for a user and return its random ID
 async function createSession(username) {
     // 32 random bytes written as hex chars, which is not possible to guess
-    const sessionID = crypto.randomBytes(32).toString("hex");
+    const sessionId = crypto.randomBytes(32).toString("hex");
     await sessionsCollection.insertOne({
-        sessionID: sessionID,
+        sessionId: sessionId,
         username: username,
         createdAt: new Date(),
         expiresAt: new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000) // 7 days from not in milliseconds
