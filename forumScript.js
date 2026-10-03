@@ -14,7 +14,6 @@ window.onload = startForum; //load data when page loads
 
 let mockData = null; // holds the data once loaded
 let selectedUserId = null; // id of user mod picked
-let nextCommentId = 100; // counter for new comment ids
 
 function startForum() { //grab mock data and fill in page
     fetch('mockData.json').then(function(response) { //Grab DB file (will eventually go to real Node JS server)
@@ -24,7 +23,7 @@ function startForum() { //grab mock data and fill in page
         showBookInfo(mockData.book); //update page to show book info
         showModInfo(mockData.modName); //update page to show mod name
         showCurrentSpeaker(mockData.currentSpeaker); //update page to show cur speaker
-        showAllComments(mockData.comments); //update page to show comments
+        loadComments(); //get all saved comments from the server and show them
         showUserList(mockData.users); //update page to show user buttons
     });
 }
@@ -95,30 +94,50 @@ function showUserList(users) { //clear page then show one button per user
     }
 }
 
-function sendComment() { //add whatever was typed as a new comment
-    let writeCommentBox = document.getElementById("writeCommentBox"); //grab the textbox
-    let text = writeCommentBox.value; //grab what user typed into it
+function loadComments() { // ask the server for all saved comments
+    fetch("/comments")
+        .then(response => response.json())
+        .then(comments => {
+            showAllComments(comments); // update page to show all comments
+        })
+        .catch(error => {
+            console.error("Could not load comments:", error);
+        });
+}
 
-    if(text === "") { //dont post empty comments
+function sendComment() { // send the comment to the server as a new comment
+    let writeCommentBox = document.getElementById("writeCommentBox"); // grab the textbox
+    let text = writeCommentBox.value; //grab what the user typed
+
+    if(text.trim() === "") { // don't post empty comments
         return;
     }
 
-    if(currentUser === null) {
+    if(currentUser === null) { // user is not logged in
         alert("Please log in to post a comment.");
         return;
     }
 
-    let newComment = { //build the new comment
-        id: nextCommentId,
-        username: currentUser.username, //logged in user from server session
-        text: text
-    };
-
-    nextCommentId = nextCommentId + 1; //bump id so next comment gets a new one
-
-    mockData.comments.push(newComment); //add new comment to data
-    addComment(newComment); //add new comment to page
-    writeCommentBox.value = ""; //clear out the textbox
+    fetch("/comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: text }) //only send the text, sever knows poster from the session
+    })
+    .then( async response => {
+        const data = await response.json();
+        if(!response.ok) { // sevrer said no (e.g. not logged in)
+            alert(data.error);
+            return;
+        }
+        addComment(data); //server saved, add to page
+        writeCommentBox.value = ""; //clear the textbox
+    })
+    .catch(error => {
+        console.error("Could not send comment:", error);
+        alert("Unable to connect to the server.");
+    });
 }
 
 function pickUser(event) { //update selectedUserId to whichever user was clicked
