@@ -357,7 +357,7 @@ const server = http.createServer((req, res) => {
                 const commentList = comments.map(comment => ({
                     id: comment._id.toString(),
                     username: comment.username,
-                    test: comment.text,
+                    text: comment.text,
                     createdAt: comment.createdAt  
                 }));
                 sendJSON(res, 200, commentList);
