@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 const mongoClient = new MongoClient(MONGO_URI);
 let usersCollection; //set once we connect to MongoDB (see startServer at the bottom)
 let sessionsCollection; //logged in sessions, also set in stateServer
+let commentsCollection; //forum comments, also set in startServer
 const SESSION_DAYS = 7; //how long a login lasts before the user has to log in again
 
 //encode/hash a password
@@ -352,8 +353,6 @@ const server = http.createServer((req, res) => {
         serveFile(req, res);
     }
 
-
-
 //--------------------------
     //unknown URL or method, return 404
     else {
@@ -368,6 +367,11 @@ async function startServer() {
     usersCollection = mongoClient.db(DB_NAME).collection("users");
     //make the database reject duplicate usernames
     await usersCollection.createIndex({ username: 1 }, { unique: true });
+
+    //comments collection: one document per comment
+    commentsCollection = mongoClient.db(DB_NAME).collection("comments");
+    //make sorting comments by time efficent
+    await commentsCollection.createIndex({ createdAt: 1});
 
     //sessions collection: one document per logged in broweser
     sessionsCollection = mongoClient.db(DB_NAME).collection("sessions");
