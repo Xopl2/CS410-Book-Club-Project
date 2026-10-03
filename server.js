@@ -348,6 +348,74 @@ const server = http.createServer((req, res) => {
     }
 
 //--------------------------
+    //get every comment, oldest first
+    else if (req.url === "/comments" && req.method === "GET") {
+        commentsCollection.find({})
+            .sort({ createdAt: 1}) //oldest first, new comments at the bottom
+            .toArray()
+            .then(comments => {
+                const commentList = comments.map(comment => ({
+                    id: comment._id.toString(),
+                    username: comment.username,
+                    test: comment.text,
+                    createdAt: comment.createdAt  
+                }));
+                sendJSON(res, 200, commentList);
+            })
+            .catch(error => {
+                console.error("Load comments error:", error);
+                sendJSON(res, 500, { error: "Server error"});
+            });
+        return;
+    }
+
+//--------------------------
+    //post a new comment (must be logged in)
+    else if (req.url === "/comments" && req.method === "POST") {
+        let body = "";
+        req.on("data", chunk => { //collect the request body (same as signup and login)
+            body += chunk;
+        });
+
+        req.on("end", async () => {
+            try {
+                //who is posting the comment? (comes from the session)
+                const user = await getSessionUser(req);
+                if (user === null) { // nobody is logged in
+                    sendJSON(res, 401, { error: "Please log in to post a comment."});
+                    return;
+                }
+
+                const data = JSON.parse(body);
+                const text = typeof data.text === "string" ? data.text.trim() : ""; // remove extra spaces at the start and the end 
+                if (text === "" || text.length > 500) { // comment either empty or too long
+                    sendJSON(res, 400, { error: "Comment must be between 1 and 500 characters."});
+                    return;
+                }
+
+                const comment = {
+                    username: user.username,
+                    text: text,
+                    createdAt: new Date()
+                };
+                const result = await commentsCollection.insertOne(comment);
+
+                // send the saved comment back to the page so it can be displayed
+                sendJSON(res, 201, {
+                    id: result.insertedId.toString(),
+                    username: comment.username,
+                    text: comment.text,
+                    createdAt: comment.createdAt
+                });
+            } catch (error) {
+                console.error("Post comment error:", error);
+                sendJSON(res, 400, { error: "Invalid request"});
+            }
+        });
+        return;
+    }
+
+//--------------------------
     //any other GET request is for a website file (forum.html, style.css, ...)
     else if (req.method === "GET") {
         serveFile(req, res);
