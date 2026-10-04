@@ -122,14 +122,14 @@ h1 {
     display: flex; 
     gap: 16px;
     box-sizing: border-box;
-    height: full;
-    min-height: 96dvh;
+    max-height: 96vh;
 }
 
 #bookPanel {
     flex: 1;
     border-style: groove;
-    height: full;
+    height: 95vh;
+    max-height: 95vh;
     border-bottom-right-radius:  8px;
     border-bottom-left-radius:  8px;
 }
@@ -185,8 +185,8 @@ h1 {
 }
 
 #commentsPanel {
-    height: 40%;
-    overflow-y: auto;
+    height: 46%;
+    overflow-y: scroll;
 }
 
 .comment {
@@ -198,7 +198,6 @@ h1 {
     border-radius: 5px;
     padding: 4px;
     border-color: darkgrey;
-    height: auto;
 }
 
 .commentInfo {
@@ -225,7 +224,7 @@ h1 {
 
 #writeCommentPanel {
     display: flex;
-    height: 20%;
+    height: 14%;
     border-radius: 8px;
 }
 
