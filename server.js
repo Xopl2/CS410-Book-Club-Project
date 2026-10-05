@@ -1,3 +1,5 @@
+// main server file for the book club application
+
 const http = require("http");
 const fs = require("fs");
 const path = require("path");

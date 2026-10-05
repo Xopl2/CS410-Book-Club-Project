@@ -1,3 +1,5 @@
+// builds the forum page by loading mock data and setting up event listeners
+
 const signupButton = document.getElementById("navSignup");
 const loginButton = document.getElementById("navLogin");
 const signoutButton = document.getElementById("navSignout");
