@@ -101,13 +101,15 @@ h1 {
 /*Forum Page Elements*/
 
 #navBar {
-    background-color: darkgray;
+    background-color: white;
     text-align: right;
     height: 3dvh;
 }
 
 #navSignup {
     border-radius: 4px;
+    background-color: #e74c3c;
+
 }
 
 #navSignout {
@@ -116,6 +118,8 @@ h1 {
 
 #navLogin {
     border-radius: 4px;
+    background-color: #e74c3c;
+
 }
 
 .flexContainer {
@@ -156,6 +160,8 @@ h1 {
     flex: 1;
     align-items: center;
     color: white;
+    font-size: 20px;
+    line-height: 1.5;
 }
 
 #bookName {
@@ -319,4 +325,34 @@ h1 {
 
 #endTurn:active {
     background-color: #CA3433;
+}
+
+    body:has(#loginForm), body:has(#signupForm) {
+    background: linear-gradient(12deg, #667eea, #764ba2);
+    padding-top: 60px;
+    box-sizing: border-box;
+}
+
+h1 { color: white; }
+
+#loginForm, #signupForm {
+    background: white;
+    border: none;
+    border-radius: 16px;
+    max-width: 380px;
+    height: auto;
+    padding: 30px;
+}
+
+
+.comment {
+    background-color: white;
+    border-radius: 10px;
+    margin: 8px;
+}
+
+#navSignout {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
 }
